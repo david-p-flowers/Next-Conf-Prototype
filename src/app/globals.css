@@ -1,26 +1,141 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Serrif VF';
+  src: url('/fonts/SerifVF.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background-canvas: #f7f6f3;
+  --neutral-0: #ffffff;
+  --border-subtle: #cfccc8;
+  --text-default: #1d1b18;
+  --text-body-primary: #09090b;
+  --text-body-secondary: #676c79;
+  --text-placeholder: #808593;
+  --gray-100: #ecedef;
+  --dropdown-hover: rgba(9, 9, 11, 0.04);
+  --button-bg-dark: #2f2f37;
+
+  --border-width-surface: 0.5px;
+  --border-width-hairline: 0.5px;
+  --border-width-button: 0.5px;
+
+  --radius-component: 6px;
+  --radius-button: 6px;
+  --radius-control: 6px;
+  --radius-3xl: 14px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--background-canvas);
+  --color-foreground: var(--text-default);
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Serrif VF', Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--background-canvas);
+  color: var(--text-default);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Review Panel Article Styles */
+.review-article h1 {
+  font-size: 28px !important;
+  line-height: 36px !important;
+  font-weight: 700 !important;
+  color: #09090b !important;
+  margin-top: 0 !important;
+  margin-bottom: 16px !important;
+  display: block !important;
+}
+
+.review-article h2 {
+  font-size: 22px !important;
+  line-height: 30px !important;
+  font-weight: 700 !important;
+  color: #09090b !important;
+  margin-top: 32px !important;
+  margin-bottom: 12px !important;
+  display: block !important;
+}
+
+.review-article h3 {
+  font-size: 18px !important;
+  line-height: 26px !important;
+  font-weight: 600 !important;
+  color: #09090b !important;
+  margin-top: 24px !important;
+  margin-bottom: 8px !important;
+  display: block !important;
+}
+
+.review-article p {
+  font-size: 14px !important;
+  line-height: 24px !important;
+  color: #09090b !important;
+  margin-top: 0 !important;
+  margin-bottom: 16px !important;
+  display: block !important;
+}
+
+.review-article ul,
+.review-article ol {
+  font-size: 14px !important;
+  line-height: 24px !important;
+  color: #09090b !important;
+  margin-top: 8px !important;
+  margin-bottom: 16px !important;
+  padding-left: 24px !important;
+  display: block !important;
+}
+
+.review-article li {
+  margin-bottom: 6px !important;
+  display: list-item !important;
+}
+
+.review-article ul li {
+  list-style-type: disc !important;
+}
+
+.review-article ol li {
+  list-style-type: decimal !important;
+}
+
+.review-article a {
+  color: #3b82f6 !important;
+  text-decoration: underline !important;
+}
+
+.review-article blockquote {
+  border-left: 3px solid #ecedef !important;
+  padding-left: 16px !important;
+  margin: 16px 0 !important;
+  color: #676c79 !important;
+  font-style: italic !important;
+}
+
+.review-article strong {
+  font-weight: 600 !important;
+}
+
+.review-article em {
+  font-style: italic !important;
+}
+
+.review-article hr {
+  border: none !important;
+  border-top: 1px solid #ecedef !important;
+  margin: 32px 0 !important;
 }
