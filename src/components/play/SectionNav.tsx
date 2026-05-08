@@ -103,7 +103,7 @@ export default function SectionNav({ width = 200 }: SectionNavProps) {
                     onClick={() => setActiveItem(item.label)}
                   className={`flex items-center gap-2 py-1.5 text-[12px] text-left transition-colors rounded-md ${
                     activeItem === item.label
-                      ? "bg-[#3f3f46] text-white pl-1"
+                      ? "bg-[#E3E1DF] text-[#1d1b18] pl-1"
                       : "text-[#4b4d58] hover:bg-[rgba(9,9,11,0.04)] px-2"
                   }`}
                   >

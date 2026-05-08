@@ -10,6 +10,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Quill",
   description: "Your content copilot",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

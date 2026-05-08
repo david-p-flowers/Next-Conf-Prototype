@@ -75,22 +75,23 @@ export default function MeasureTab() {
     <div className="flex flex-col gap-6 px-6 py-5">
       {/* Filters */}
       <div className="flex items-center gap-3">
-        <button className="flex items-center gap-2 px-3 py-1.5 border border-[#ecedef] rounded-md text-sm text-[#1d1b18] hover:bg-[#fafafa]">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <rect x="1.5" y="2" width="11" height="10" rx="1.5" stroke="currentColor" strokeWidth="1" />
-            <path d="M1.5 5.5h11" stroke="currentColor" strokeWidth="1" />
-            <path d="M4.5 1v2M9.5 1v2" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+        <button className="flex items-center justify-center gap-1.5 rounded-md bg-white hover:bg-[#fafafa] text-[13px] text-[#1d1b18]" style={{ padding: "6px 12px", border: "1px solid rgba(9, 9, 11, 0.08)" }}>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="shrink-0">
+            <rect x="1.5" y="2" width="11" height="10" rx="1.5" stroke="#6D6A64" strokeWidth="1" />
+            <path d="M1.5 5.5h11" stroke="#6D6A64" strokeWidth="1" />
+            <path d="M4.5 1v2M9.5 1v2" stroke="#6D6A64" strokeWidth="1" strokeLinecap="round" />
           </svg>
-          Sep 17 - Sep 23 <span className="text-[#676c79]">▾</span>
+          Sep 17 - Sep 23
+          <img src="/icons/toolbar-caret-down.svg" alt="" className="w-[10px] h-[10px] shrink-0" />
         </button>
-        <div className="flex items-center gap-1 px-3 py-1.5 border border-[#ecedef] rounded-md text-sm">
-          <span className="font-medium text-[#1d1b18]">Region</span>
-          <span className="text-[#1d1b18]">United States</span>
-          <span className="text-[#676c79]">▾</span>
-        </div>
-        <button className="flex items-center gap-1.5 px-3 py-1.5 border border-[#ecedef] rounded-md text-sm text-[#1d1b18] hover:bg-[#fafafa]">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M2 3h8M4 6h4M5 9h2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+        <button className="flex items-center justify-center gap-1.5 rounded-md bg-white hover:bg-[#fafafa] text-[13px] text-[#1d1b18]" style={{ padding: "6px 12px", border: "1px solid rgba(9, 9, 11, 0.08)" }}>
+          <span className="font-medium">Region</span>
+          United States
+          <img src="/icons/toolbar-caret-down.svg" alt="" className="w-[10px] h-[10px] shrink-0" />
+        </button>
+        <button className="flex items-center justify-center gap-1.5 rounded-md bg-white hover:bg-[#fafafa] text-[13px] text-[#1d1b18]" style={{ padding: "6px 12px", border: "1px solid rgba(9, 9, 11, 0.08)" }}>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="shrink-0">
+            <path d="M2 3h8M4 6h4M5 9h2" stroke="#6D6A64" strokeWidth="1.2" strokeLinecap="round" />
           </svg>
           Filter
         </button>

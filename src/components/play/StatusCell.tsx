@@ -99,7 +99,7 @@ function ViewOutputCell({ hovered, onViewOutput }: { hovered: boolean; onViewOut
           className="w-[22px] h-[22px] flex items-center justify-center rounded-[4px] border border-[rgba(9,9,11,0.08)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5" stroke="#09090b" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5" stroke="#09090b" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
       )}
@@ -127,7 +127,7 @@ function HumanReviewCell({ hovered, onViewOutput }: { hovered: boolean; onViewOu
           className="w-[22px] h-[22px] flex items-center justify-center rounded-[4px] border border-[rgba(247,144,9,0.3)] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5" stroke="#09090b" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5" stroke="#09090b" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
       )}
