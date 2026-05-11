@@ -6,7 +6,7 @@ import { SearchIcon, StarIcon } from "@/components/icons";
 
 export default function PlaysListView() {
   return (
-    <div className="flex flex-col flex-1 min-w-0 h-full bg-white border-[0.5px] border-[#cfccc8] rounded-xl overflow-hidden">
+    <div className="flex flex-col flex-1 min-w-0 h-full bg-white overflow-hidden">
       <div className="flex flex-col flex-1 overflow-y-auto px-8 py-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-[28px] font-semibold text-[#1d1b18]">Plays</h1>

@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import {
   conversationScript,
+  samplePrompts,
   ConversationStep,
 } from "@/lib/conversationScript";
 import UserBubble from "./UserBubble";
@@ -12,6 +13,7 @@ import SystemMessage from "./SystemMessage";
 import QuestionForm from "./QuestionForm";
 import QuestionAnswerInline from "./QuestionAnswerInline";
 import CreatedItem from "./CreatedItem";
+import InlineChart from "./InlineChart";
 import ChatInput from "./ChatInput";
 import SidePanel from "./SidePanel";
 import QuillHeroAnimation from "@/components/QuillHeroAnimation";
@@ -31,6 +33,7 @@ export default function ChatEngine() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [sidePanelData, setSidePanelData] = useState<SidePanelData | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const processingRef = useRef(false);
   const messageIdCounter = useRef(0);
@@ -68,6 +71,7 @@ export default function ChatEngine() {
 
         if (step.type === "wait_for_input") {
           setIsWaitingForInput(true);
+          setSuggestions(step.suggestions || []);
           setIsProcessing(false);
           setCurrentStepIndex(idx + 1);
           processingRef.current = false;
@@ -103,6 +107,13 @@ export default function ChatEngine() {
           setMessages((prev) =>
             prev.map((m) => (m.id === id ? { ...m, streamComplete: true } : m))
           );
+        } else if (step.type === "chart") {
+          const id = nextId();
+          setMessages((prev) => [...prev, { id, step, streamComplete: false }]);
+          await sleep(800);
+          setMessages((prev) =>
+            prev.map((m) => (m.id === id ? { ...m, streamComplete: true } : m))
+          );
         } else if (step.type === "question") {
           const id = nextId();
           setMessages((prev) => [...prev, { id, step }]);
@@ -130,6 +141,7 @@ export default function ChatEngine() {
   const handleUserInput = useCallback(
     (text: string) => {
       setIsWaitingForInput(false);
+      setSuggestions([]);
       setShowHistory(true);
 
       const nextStep = conversationScript[currentStepIndex];
@@ -222,6 +234,17 @@ export default function ChatEngine() {
             animationDelay={step.animationDelay}
           />
         );
+      case "chart":
+        return (
+          <InlineChart
+            key={id}
+            title={step.title}
+            value={step.value}
+            change={step.change}
+            changeDirection={step.changeDirection}
+            data={step.data}
+          />
+        );
       default:
         return null;
     }
@@ -230,83 +253,116 @@ export default function ChatEngine() {
   const showHomepage = messages.length === 0 && isWaitingForInput;
 
   return (
-    <div className="flex flex-1 min-w-0 h-full gap-2">
-      <div className="flex flex-col flex-1 min-w-0 h-full bg-white border-[0.5px] border-[#cfccc8] rounded-xl overflow-hidden">
-        {/* Header */}
-        {showHistory && (
-          <div className="flex items-center justify-end px-4 py-3 shrink-0">
-            <button className="flex items-center gap-1.5 text-[13px] text-[#1d1b18] border border-[#ecedef] rounded-md px-3 py-1.5">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <circle cx="7" cy="7" r="5.5" stroke="#1d1b18" strokeWidth="1" />
-                <path d="M7 4v3.5l2 1.5" stroke="#1d1b18" strokeWidth="1" strokeLinecap="round" />
-              </svg>
-              History
-            </button>
-          </div>
-        )}
+    <div className="flex flex-1 min-w-0 h-full">
+      <div className="flex flex-col flex-1 min-w-0 h-full bg-white overflow-hidden">
+        {showHomepage ? (
+          <div className="flex flex-col flex-1 items-center justify-center px-4">
+            <div className="flex flex-col gap-10 items-center max-w-[700px] w-full">
+              {/* Hero heading */}
+              <div className="flex flex-col gap-3 items-center w-full">
+                <div className="flex items-center gap-3 justify-center">
+                  <h1
+                    className="text-[40px] text-[#1d1b18] whitespace-nowrap"
+                    style={{ fontFamily: "'Serrif VF', Georgia, serif" }}
+                  >
+                    What&apos;s your next Play?
+                  </h1>
+                  <div className="relative shrink-0" style={{ width: 31, height: 31 }}>
+                    <QuillHeroAnimation />
+                  </div>
+                </div>
+                <p className="text-base leading-6 text-center text-[#676c79]">
+                  Quill is your content copilot. Find opportunities, act on them,
+                  and measure the impact.
+                </p>
+              </div>
 
-        {/* Chat messages area */}
-        <div
-          ref={scrollRef}
-          className="flex flex-col flex-1 min-h-0 overflow-y-auto px-6 pb-4"
-        >
-          {showHomepage ? (
-            <HomepageHero />
-          ) : (
-            <div className="flex flex-col gap-3 pt-4 max-w-[700px] mx-auto w-full">
-              <AnimatePresence mode="popLayout">
-                {messages.map(renderMessage)}
-              </AnimatePresence>
+              {/* Input */}
+              <div className="w-full px-2">
+                <ChatInput
+                  onSend={handleUserInput}
+                  disabled={false}
+                  placeholder="Refresh our buying guides for better AI visibility"
+                />
+              </div>
+
+              {/* Sample prompts */}
+              <div className="flex flex-col gap-1 w-full">
+                {samplePrompts.map((prompt, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleUserInput(prompt.text)}
+                    className="flex items-center gap-2.5 w-full rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-[rgba(9,9,11,0.04)] group"
+                  >
+                    <span className="flex-1 min-w-0 text-[14px] leading-5 text-[#676c79] group-hover:text-[#09090b]">
+                      {prompt.text}
+                    </span>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <path d="M3.5 8.5L8.5 3.5M8.5 3.5H5M8.5 3.5V7" stroke="#09090b" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                ))}
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <>
+            {/* Header */}
+            {showHistory && (
+              <div className="flex items-center justify-end px-4 py-3 shrink-0">
+                <button className="flex items-center gap-1.5 text-[13px] text-[#1d1b18] border border-[#ecedef] rounded-md px-3 py-1.5">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <circle cx="7" cy="7" r="5.5" stroke="#1d1b18" strokeWidth="1" />
+                    <path d="M7 4v3.5l2 1.5" stroke="#1d1b18" strokeWidth="1" strokeLinecap="round" />
+                  </svg>
+                  History
+                </button>
+              </div>
+            )}
 
-        {/* Chat input */}
-        <div className="pb-4 pt-2 shrink-0 max-w-[700px] mx-auto w-full">
-          <ChatInput
-            onSend={handleUserInput}
-            disabled={isProcessing || isWaitingForSubmit}
-            placeholder={
-              showHomepage
-                ? "Find experience pages that need updating and refresh them to improve citations and visibility"
-                : "Type / for commands"
-            }
-          />
-        </div>
+            {/* Chat messages */}
+            <div
+              ref={scrollRef}
+              className="flex flex-col flex-1 min-h-0 overflow-y-auto px-6 pb-4"
+            >
+              <div className="flex flex-col gap-3 pt-4 max-w-[700px] mx-auto w-full">
+                <AnimatePresence mode="popLayout">
+                  {messages.map(renderMessage)}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Suggestion bubbles */}
+            {suggestions.length > 0 && isWaitingForInput && (
+              <div className="flex flex-wrap gap-2 px-6 pb-3 max-w-[700px] mx-auto w-full">
+                {suggestions.map((s, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleUserInput(s)}
+                    className="text-[13px] text-[#1d1b18] px-3 py-1.5 rounded-full border border-[#ecedef] bg-white hover:bg-[#f7f6f3] transition-colors"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Chat input pinned to bottom */}
+            <div className="pb-4 pt-2 shrink-0 max-w-[700px] mx-auto w-full">
+              <ChatInput
+                onSend={handleUserInput}
+                disabled={isProcessing || isWaitingForSubmit}
+                placeholder="Type / for commands"
+              />
+            </div>
+          </>
+        )}
       </div>
 
       {/* Side Panel */}
       <AnimatePresence>
         {sidePanelData && <SidePanel data={sidePanelData} />}
       </AnimatePresence>
-    </div>
-  );
-}
-
-function HomepageHero() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center">
-      <div className="flex flex-col gap-10 items-center max-w-[700px] w-full">
-        <div className="flex flex-col items-center">
-          <div className="flex flex-col gap-3 items-center w-full">
-            <div className="flex items-center gap-3 justify-center">
-              <h1
-                className="text-[40px] text-[#1d1b18] whitespace-nowrap"
-                style={{ fontFamily: "'Serrif VF', Georgia, serif" }}
-              >
-                What&apos;s your next play?
-              </h1>
-              <div className="relative shrink-0" style={{ width: 44, height: 44 }}>
-                <QuillHeroAnimation />
-              </div>
-            </div>
-            <p className="text-base leading-6 text-center text-[#676c79]">
-              Quill is your content copilot. Find opportunities, act on them,
-              and measure the impact.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

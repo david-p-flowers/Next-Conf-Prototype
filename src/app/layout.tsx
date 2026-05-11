@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Quill",
+  title: "AirOps",
   description: "Your content copilot",
   icons: {
     icon: "/favicon.svg",

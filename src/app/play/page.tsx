@@ -3,7 +3,7 @@ import PlayDetailView from "@/components/play/PlayDetailView";
 
 export default function PlayPage() {
   return (
-    <div className="flex gap-2 p-3 w-full h-screen bg-[#f7f6f3]">
+    <div className="flex w-full h-screen">
       <Sidebar activeItem="plays" />
       <PlayDetailView />
     </div>

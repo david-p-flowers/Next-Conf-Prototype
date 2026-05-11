@@ -1,0 +1,47 @@
+{
+  "measure": {
+    "dateRange": "Sep 17 - Sep 23",
+    "region": "United States"
+  },
+  "inbox": [
+    {
+      "id": "1",
+      "playName": "Competitor Gap Closer",
+      "message": "Quill needs review on 14 recommended pages to close content gaps",
+      "unread": true,
+      "tag": "question",
+      "time": "2h"
+    },
+    {
+      "id": "2",
+      "playName": "Brand Kit Monitor",
+      "message": "Quill needs approval on changes to product positioning",
+      "unread": true,
+      "tag": "review",
+      "time": "2h"
+    },
+    {
+      "id": "3",
+      "playName": "Content Freshness",
+      "message": "Quill has 3 questions for Best Hotels in San Diego",
+      "unread": true,
+      "tag": "review",
+      "time": "2h"
+    },
+    {
+      "id": "4",
+      "playName": "Content Freshness",
+      "message": "David gave feedback",
+      "unread": false,
+      "time": "2h"
+    },
+    {
+      "id": "5",
+      "playName": "Brand Kit Monitor",
+      "message": "Dillon published 3 brand kit updates",
+      "unread": false,
+      "tag": "review",
+      "time": "2h"
+    }
+  ]
+}

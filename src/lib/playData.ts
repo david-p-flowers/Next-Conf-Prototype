@@ -14,7 +14,7 @@ export interface ActionRow {
   refreshBrief: string;
   landingPageRefresh: "view_output" | "human_review" | "run_playbook" | "loading";
   refreshedContent: string;
-  verified?: boolean;
+  published?: boolean;
 }
 
 export interface PlayListItem {
@@ -196,7 +196,7 @@ export const actionData: ActionRow[] = [
     refreshBrief: "Two restaurants closed, pric...",
     landingPageRefresh: "view_output",
     refreshedContent: "We walked 4 miles thr...",
-    verified: true,
+    published: true,
   },
   {
     id: "act-2",
@@ -206,7 +206,7 @@ export const actionData: ActionRow[] = [
     refreshBrief: "Title still says 2025. Compet...",
     landingPageRefresh: "human_review",
     refreshedContent: "Whether you're luftin...",
-    verified: false,
+    published: false,
   },
   {
     id: "act-3",
@@ -216,7 +216,7 @@ export const actionData: ActionRow[] = [
     refreshBrief: "Pricing off by 14 months. No...",
     landingPageRefresh: "view_output",
     refreshedContent: "The best tasting roo...",
-    verified: true,
+    published: true,
   },
   {
     id: "act-4",
@@ -226,7 +226,7 @@ export const actionData: ActionRow[] = [
     refreshBrief: "High traffic, zero AI citatio...",
     landingPageRefresh: "view_output",
     refreshedContent: "Yaowarat Road after d...",
-    verified: true,
+    published: false,
   },
   {
     id: "act-5",
@@ -236,7 +236,7 @@ export const actionData: ActionRow[] = [
     refreshBrief: "3 of 5 restaurants changed m...",
     landingPageRefresh: "run_playbook",
     refreshedContent: "Portland's farm-to-ta...",
-    verified: false,
+    published: false,
   },
 ];
 
@@ -300,7 +300,7 @@ export interface ReviewPanelData {
   articleContent: string;
   wordCount: number;
   charCount: number;
-  steps: { label: string; type: string; source?: string }[];
+  steps: { label: string; type: string; source?: string; icon?: "airops" }[];
 }
 
 export const reviewPanelContentByAction: Record<string, ReviewPanelData> = {
@@ -332,15 +332,15 @@ export const reviewPanelContentByAction: Record<string, ReviewPanelData> = {
     wordCount: 2340,
     charCount: 3842,
     steps: [
-      { label: "Verified local business listings", type: "completed" },
-      { label: "Cross-referenced Google Maps, Yelp, and restaurant websites for closures and hour changes", type: "description" },
-      { label: "Pulled current pricing", type: "completed" },
-      { label: "AirOps Knowledge Base", type: "tool", source: "Fetched brand voice guidelines" },
-      { label: "AirOps Brand Kit", type: "tool", source: "Loaded Acme Experiences tone and style" },
-      { label: "Rewrote intro with April 2026 verification date and updated restaurant references.", type: "description" },
-      { label: "Added structured FAQ schema for 6 common queries about LA food tours.", type: "description" },
-      { label: "Updated internal links", type: "completed" },
-      { label: "Validated schema markup", type: "completed" },
+      { label: "I'll start by searching for best AEO tools using Google Search.", type: "description" },
+      { label: "Searched Google", type: "completed" },
+      { label: "Gather the title, snippet, and content for each of the top 15 ranking pages", type: "description" },
+      { label: "Compared domains with SEMRush", type: "completed" },
+      { label: "AirOps to list Knowledge Bases", type: "tool", icon: "airops" },
+      { label: "AirOps to list Brand Kits", type: "tool", icon: "airops" },
+      { label: "Now let me fetch the most relevant Q1 2026 product pages in parallel, and also pull the current brand kit details.", type: "description" },
+      { label: "I now have all the context I need. Let me write the comprehensive suggestion file.", type: "description" },
+      { label: "Used 3 tools", type: "completed" },
     ],
   },
 

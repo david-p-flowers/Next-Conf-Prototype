@@ -17,7 +17,7 @@ export default function SidePanel({ data }: SidePanelProps) {
       animate={{ opacity: 1, x: 0, width: 280 }}
       exit={{ opacity: 0, x: 20, width: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="h-full bg-white border-[0.5px] border-[#cfccc8] rounded-xl overflow-hidden flex flex-col shrink-0"
+      className="h-full bg-white border-l border-[#ecedef] overflow-hidden flex flex-col shrink-0"
     >
       <div className="flex flex-col flex-1 overflow-y-auto px-5 py-5 gap-5">
         {/* Header */}

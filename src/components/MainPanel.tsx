@@ -37,7 +37,7 @@ function SuggestionItem({
 
 export default function MainPanel() {
   return (
-    <div className="flex flex-col flex-1 min-w-0 h-[900px] bg-white border-[0.5px] border-[#cfccc8] rounded-xl overflow-hidden">
+    <div className="flex flex-col flex-1 min-w-0 h-[900px] bg-white overflow-hidden">
       <div className="flex flex-col flex-1 min-h-0 items-center justify-center px-4">
         <div className="flex flex-col flex-1 min-h-0 items-center justify-center w-full">
           <div className="flex flex-col gap-10 items-center max-w-[700px] w-full">

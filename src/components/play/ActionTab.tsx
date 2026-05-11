@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { actionData } from "@/lib/playData";
 import type { ActionRow } from "@/lib/playData";
+import { useLocalStorage } from "@/lib/useLocalStorage";
+import { addInboxItem } from "@/lib/inboxStore";
 import StatusCell from "./StatusCell";
 import type { StatusType } from "./StatusCell";
 
@@ -12,14 +14,13 @@ interface Props {
 }
 
 const defaultColWidths: Record<string, number> = {
-  checkbox: 40,
+  checkbox: 64,
   num: 32,
   page: 180,
   date: 140,
   slug: 150,
   brief: 180,
   status: 210,
-  content: 170,
   export: 170,
 };
 
@@ -55,8 +56,41 @@ export default function ActionTab({ onViewOutput, additionalRows = [] }: Props) 
   const allRows = [...actionData, ...additionalRows];
   const [selectedCell, setSelectedCell] = useState<string | null>(null);
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
-  const [rowStatuses, setRowStatuses] = useState<Record<string, StatusType>>({});
+  const [rowStatuses, setRowStatuses] = useLocalStorage<Record<string, StatusType>>("quill-action-row-statuses", {});
+  const [publishedRows, setPublishedRows] = useLocalStorage<Record<string, boolean>>("quill-action-published-rows", () => {
+    const initial: Record<string, boolean> = {};
+    [...actionData, ...additionalRows].forEach((row) => {
+      if (row.published) initial[row.id] = true;
+    });
+    return initial;
+  });
   const [colWidths, setColWidths] = useState(defaultColWidths);
+
+  useEffect(() => {
+    const loadingIds = Object.entries(rowStatuses)
+      .filter(([, status]) => status === "loading")
+      .map(([id]) => id);
+
+    if (loadingIds.length === 0) return;
+
+    const updated = { ...rowStatuses };
+    loadingIds.forEach((id) => {
+      updated[id] = "human_review";
+      const row = allRows.find((r) => r.id === id);
+      if (row) {
+        addInboxItem({
+          id: `inbox-${id}`,
+          playName: "Food & Dining Refresh",
+          message: `Quill needs your review on ${row.pageSlug || row.page}`,
+          unread: true,
+          tag: "review",
+          time: "Just now",
+        });
+      }
+    });
+    setRowStatuses(updated);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleColResize = (col: string, startWidth: number) => (delta: number) => {
     setColWidths((prev) => ({
@@ -76,7 +110,7 @@ export default function ActionTab({ onViewOutput, additionalRows = [] }: Props) 
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar */}
-      <div className="flex items-center justify-between px-6 py-3 border-b border-[#ecedef]">
+      <div className="flex items-center justify-between px-8 py-3 border-b border-[#ecedef]">
         <div className="flex items-center gap-2">
           <button className="flex items-center gap-1.5 px-3 py-1.5 border border-[#ecedef] rounded-md text-sm text-[#1d1b18] hover:bg-[#fafafa]">
             Filter
@@ -106,10 +140,10 @@ export default function ActionTab({ onViewOutput, additionalRows = [] }: Props) 
 
       {/* Table */}
       <div className="flex-1 overflow-x-auto overflow-y-auto">
-        <table className="border-collapse" style={{ tableLayout: "fixed", width: Object.values(colWidths).reduce((a, b) => a + b, 0) }}>
+        <table className="border-collapse w-full" style={{ tableLayout: "fixed", minWidth: Object.values(colWidths).reduce((a, b) => a + b, 0) }}>
           <thead>
             <tr className="border-b border-[#ecedef]">
-              <th className="py-2.5 px-3 text-left border-r border-[#f3f4f6] relative" style={{ width: colWidths.checkbox }}>
+              <th className="py-2.5 pl-8 pr-3 text-left relative" style={{ width: colWidths.checkbox }}>
                 <input type="checkbox" className="w-4 h-4 rounded border-[#cfccc8]" />
               </th>
               <th className="py-2.5 px-2 text-left border-r border-[#f3f4f6] relative" style={{ width: colWidths.num }} />
@@ -149,20 +183,10 @@ export default function ActionTab({ onViewOutput, additionalRows = [] }: Props) 
                 </div>
                 <ResizeHandle onResize={handleColResize("status", colWidths.status)} />
               </th>
-              <th className="py-1.5 pl-3 pr-1.5 text-left whitespace-nowrap border-t border-r border-b border-[rgba(9,9,11,0.08)] relative" style={{ width: colWidths.content, background: "#F2F8FD" }}>
-                <div className="flex items-center gap-1.5">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="shrink-0">
-                    <path d="M2 3h8M2 6h6M2 9h4" stroke="#3b82f6" strokeWidth="1.2" strokeLinecap="round" />
-                  </svg>
-                  <span className="text-[13px] font-medium text-[#3b82f6]">Refreshed Content</span>
-                </div>
-                <ResizeHandle onResize={handleColResize("content", colWidths.content)} />
-              </th>
               <th className="py-1.5 pl-3 pr-1.5 text-left whitespace-nowrap border-t border-r border-b border-[rgba(9,9,11,0.08)] relative" style={{ width: colWidths.export, background: "#F2F8FD" }}>
                 <div className="flex items-center gap-2">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="shrink-0">
-                    <path d="M7 1.5L2.5 3.5V6.5C2.5 9.5 4.5 11.5 7 12.5C9.5 11.5 11.5 9.5 11.5 6.5V3.5L7 1.5Z" stroke="#3b82f6" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                    <circle cx="7" cy="7" r="1.5" fill="#3b82f6" />
+                  <svg width="14" height="9" viewBox="0 0 1080 674" fill="none" className="shrink-0">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M1080 0L735.386 673.684H411.695L555.916 394.481H549.445C430.464 548.934 252.942 650.61 -0.000488281 673.684V398.344C-0.000488281 398.344 161.813 388.787 256.938 288.776H-0.000488281V0.0053214H288.771V237.515L295.252 237.489L413.254 0.0053214H631.644V236.009L638.126 235.999L760.555 0H1080Z" fill="#146EF5" />
                   </svg>
                   <span className="text-[13px] font-medium text-[#3b82f6]">Webflow Export</span>
                 </div>
@@ -180,7 +204,7 @@ export default function ActionTab({ onViewOutput, additionalRows = [] }: Props) 
                 onMouseEnter={() => setHoveredRow(row.id)}
                 onMouseLeave={() => setHoveredRow(null)}
               >
-                <td className="h-[36px] px-3 border-b border-[rgba(9,9,11,0.08)] border-r border-r-[rgba(9,9,11,0.08)]">
+                <td className="w-fit h-[36px] pl-8 pr-3 border-b border-[rgba(9,9,11,0.08)]">
                   <input type="checkbox" className="w-4 h-4 rounded border-[#cfccc8]" />
                 </td>
                 <td className="h-[36px] px-2 text-xs text-[#676c79] border-b border-[rgba(9,9,11,0.08)] border-r border-r-[rgba(9,9,11,0.08)] text-center whitespace-nowrap">
@@ -241,24 +265,24 @@ export default function ActionTab({ onViewOutput, additionalRows = [] }: Props) 
                     onRunPlaybook={() => handleRunPlaybook(row.id)}
                   />
                 </td>
-                <td
-                  className={`h-[36px] px-3 border-b border-[rgba(9,9,11,0.08)] border-r border-r-[rgba(9,9,11,0.08)] cursor-pointer overflow-hidden ${
-                    selectedCell === `${row.id}-content`
-                      ? "ring-2 ring-[#3b82f6] ring-inset"
-                      : ""
-                  }`}
-                  onClick={() => setSelectedCell(`${row.id}-content`)}
-                >
-                  <span className="text-[13px] text-[#09090b] truncate block leading-5" title={row.refreshedContent}>
-                    {row.refreshedContent}
-                  </span>
-                </td>
-                <td className="h-[36px] px-3 border-b border-[rgba(9,9,11,0.08)] text-center whitespace-nowrap">
-                  {row.verified && (
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="inline-block">
-                      <path d="M7 1.5L2.5 3.5V6.5C2.5 9.5 4.5 11.5 7 12.5C9.5 11.5 11.5 9.5 11.5 6.5V3.5L7 1.5Z" fill="#dbeafe" stroke="#3b82f6" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M5 7L6.5 8.5L9 5.5" stroke="#3b82f6" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
+                <td className="h-[36px] px-3 border-b border-[rgba(9,9,11,0.08)] whitespace-nowrap">
+                  {publishedRows[row.id] ? (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#ecfdf5] text-[12px] font-medium text-[#059669]">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="shrink-0">
+                        <path d="M2 5.5L4 7.5L8 3" stroke="#059669" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      Published
+                    </span>
+                  ) : (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPublishedRows((prev) => ({ ...prev, [row.id]: true }));
+                      }}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md border border-[rgba(9,9,11,0.08)] text-[12px] font-medium text-[#09090b] bg-white hover:bg-[#fafafa] transition-colors"
+                    >
+                      Publish
+                    </button>
                   )}
                 </td>
               </tr>

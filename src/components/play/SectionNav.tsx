@@ -13,11 +13,7 @@ const sections: SectionGroup[] = [
     title: "Final Output",
     defaultOpen: true,
     items: [
-      { label: "Intro" },
-      { label: "Author Name" },
       { label: "Markdown Article", icon: "doc" },
-      { label: "Refreshed Article", icon: "code" },
-      { label: "Enforce writing rules" },
     ],
   },
   {
@@ -29,11 +25,18 @@ const sections: SectionGroup[] = [
 
 interface SectionNavProps {
   width?: number;
+  defaultCollapsed?: boolean;
+  onCollapsedChange?: (collapsed: boolean) => void;
 }
 
-export default function SectionNav({ width = 200 }: SectionNavProps) {
+export default function SectionNav({ width = 200, defaultCollapsed = false, onCollapsedChange }: SectionNavProps) {
   const isNarrow = width < 80;
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(defaultCollapsed);
+
+  const handleCollapse = (value: boolean) => {
+    setCollapsed(value);
+    onCollapsedChange?.(value);
+  };
   const [openSections, setOpenSections] = useState<Set<string>>(
     new Set(sections.filter((s) => s.defaultOpen).map((s) => s.title))
   );
@@ -52,8 +55,8 @@ export default function SectionNav({ width = 200 }: SectionNavProps) {
     return (
       <div className="flex flex-col items-start pt-4 px-2 h-full" style={{ gap: 20 }}>
         <button
-          onClick={() => setCollapsed(false)}
-          className="w-7 h-7 flex items-center justify-center rounded border border-[rgba(9,9,11,0.08)] bg-white hover:bg-[#fafafa]"
+          onClick={() => handleCollapse(false)}
+          className="w-7 h-7 flex items-center justify-center rounded border border-[rgba(9,9,11,0.08)] hover:bg-white/60"
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <path d="M3 4h8M3 7h8M3 10h8" stroke="#09090b" strokeWidth="1.2" strokeLinecap="round" />
@@ -67,7 +70,7 @@ export default function SectionNav({ width = 200 }: SectionNavProps) {
     <div className="flex flex-col overflow-y-auto pt-8 px-2 h-full" style={{ gap: 20 }}>
       <div>
         <button
-          onClick={() => setCollapsed(true)}
+          onClick={() => handleCollapse(true)}
           className="w-7 h-7 flex items-center justify-center rounded border border-[rgba(9,9,11,0.08)] bg-white hover:bg-[#fafafa]"
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">

@@ -8,14 +8,19 @@ import SectionNav from "./SectionNav";
 interface Props {
   onClose: () => void;
   status?: StatusType;
+  sectionNavCollapsed?: boolean;
 }
 
 type ResizeTarget = "panel" | "left" | "right" | null;
 
-export default function ReviewPanel({ onClose, status = "view_output" }: Props) {
+export default function ReviewPanel({ onClose, status = "view_output", sectionNavCollapsed = true }: Props) {
   const [width, setWidth] = useState(1160);
-  const [leftWidth, setLeftWidth] = useState(200);
+  const [leftWidth, setLeftWidth] = useState(() => sectionNavCollapsed ? 44 : 200);
   const [rightWidth, setRightWidth] = useState(320);
+
+  useEffect(() => {
+    setLeftWidth(sectionNavCollapsed ? 44 : 200);
+  }, [sectionNavCollapsed]);
   const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
   const [resizeTarget, setResizeTarget] = useState<ResizeTarget>(null);
   const [panelLeft, setPanelLeft] = useState(0);
@@ -63,10 +68,10 @@ export default function ReviewPanel({ onClose, status = "view_output" }: Props) 
       {/* Outer container - beige background with rounded corners */}
       <div
         data-panel-root
-        className={`relative flex flex-col h-[calc(100vh-24px)] my-3 mr-3 rounded-xl overflow-hidden ${resizeTarget ? "select-none" : ""}`}
+        className={`relative flex flex-col h-screen overflow-hidden ${resizeTarget ? "select-none" : ""}`}
         style={{
           width,
-          border: "0.5px solid #CFCCC8",
+          borderLeft: "0.5px solid #CFCCC8",
           background: "#f7f6f3",
         }}
       >
@@ -122,8 +127,12 @@ export default function ReviewPanel({ onClose, status = "view_output" }: Props) 
         {/* Main content area */}
         <div className="flex flex-1 min-h-0 gap-0 bg-[#f7f6f3]">
           {/* Left blade - section nav on beige bg */}
-          <div className="relative shrink-0" style={{ width: leftWidth }}>
-            <SectionNav width={leftWidth} />
+          <div className="relative shrink-0 transition-[width] duration-200" style={{ width: leftWidth }}>
+            <SectionNav
+              width={leftWidth}
+              defaultCollapsed={sectionNavCollapsed}
+              onCollapsedChange={(c) => setLeftWidth(c ? 44 : 200)}
+            />
             {/* Left resize handle */}
             <div
               className={`absolute right-0 top-0 bottom-0 w-1.5 cursor-col-resize z-10 transition-colors ${
@@ -210,7 +219,7 @@ export default function ReviewPanel({ onClose, status = "view_output" }: Props) 
 
           {/* Right sidebar - on beige bg */}
           {rightSidebarOpen ? (
-            <div className="relative shrink-0 flex flex-col overflow-hidden pl-4 pr-1" style={{ width: rightWidth }}>
+            <div className="relative shrink-0 flex flex-col overflow-hidden" style={{ width: rightWidth }}>
               {/* Right resize handle */}
               <div
                 className={`absolute left-0 top-0 bottom-0 w-1.5 cursor-col-resize z-10 transition-colors ${
@@ -219,35 +228,40 @@ export default function ReviewPanel({ onClose, status = "view_output" }: Props) 
                 onMouseDown={startResize("right")}
               />
 
-              {/* Summarize button */}
-              <div className="pt-3" />
-              <button className="w-full text-[12px] font-medium text-[#09090b] border border-[rgba(9,9,11,0.08)] rounded-md px-3 py-1.5 hover:bg-white/60 bg-[#ecfdf5] transition-colors mb-4">
-                Summarize this playbook
-              </button>
+              {/* Scrollable content */}
+              <div className="flex-1 overflow-y-auto px-6 pt-8">
+                <div className="flex flex-col gap-4">
+                  {/* Summarize bubble */}
+                  <div className="flex justify-end">
+                    <div className="bg-[#DFEAE3] rounded-lg px-2 py-1.5 max-w-[262px]">
+                      <span className="text-[13px] leading-4 text-[#1d1b18]">Summarize this playbook</span>
+                    </div>
+                  </div>
 
-              {/* Steps */}
-              <div className="flex-1 overflow-y-auto pr-1">
-                <div className="flex flex-col gap-1">
+                  {/* Steps */}
                   {reviewPanelContent.steps.map((step, idx) => (
-                    <div key={idx} className="py-1">
+                    <div key={idx}>
                       {step.type === "completed" && (
-                        <div className="flex items-center gap-1">
-                          <span className="text-[13px] leading-6 text-[#1d1b18]">{step.label}</span>
-                          <span className="text-[#9ca3af] text-[13px]">›</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[14px] leading-5 text-[#6d6a64]">{step.label}</span>
+                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="shrink-0 -rotate-90">
+                            <path d="M4 5L6 7.5L8 5" stroke="#6d6a64" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
                         </div>
                       )}
                       {step.type === "tool" && (
-                        <div className="flex flex-col gap-0.5 py-0.5">
-                          <div className="flex items-center gap-1.5">
-                            <span className="w-[16px] h-[16px] rounded-[3px] bg-[#09090b] flex items-center justify-center text-white text-[6px] font-bold shrink-0 tracking-tight">ao</span>
-                            <span className="text-[13px] leading-6 text-[#1d1b18]">{step.label}</span>
-                            <span className="text-[#9ca3af] text-[13px]">›</span>
-                          </div>
-                          <span className="pl-[22px] text-[#9ca3af] text-[12px] leading-5">{step.source}</span>
+                        <div className="flex items-center gap-2">
+                          {step.icon === "airops" && (
+                            <img src="/icons/airops-logo.svg" alt="" className="w-[14px] h-[14px] rounded-[3px] shrink-0" />
+                          )}
+                          <span className="text-[14px] leading-5 text-[#6d6a64]">{step.label}</span>
+                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="shrink-0 -rotate-90">
+                            <path d="M4 5L6 7.5L8 5" stroke="#6d6a64" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
                         </div>
                       )}
                       {step.type === "description" && (
-                        <p className="text-[13px] text-[#1d1b18] leading-[20px] py-0.5">{step.label}</p>
+                        <p className="text-[14px] text-[#1d1b18] leading-5">{step.label}</p>
                       )}
                     </div>
                   ))}
@@ -255,7 +269,7 @@ export default function ReviewPanel({ onClose, status = "view_output" }: Props) 
               </div>
 
               {/* Bottom - mode dependent */}
-              <div className="pt-4 pb-1 shrink-0">
+              <div className="px-4 pt-4 pb-4 shrink-0 bg-[#f7f6f3]">
                 {isHumanReview ? <HumanReviewInput /> : <PanelChatInput />}
               </div>
             </div>

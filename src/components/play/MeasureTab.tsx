@@ -4,7 +4,11 @@ import {
   measureMetrics,
   citationRateChartData,
   citationShareChartData,
+  actionData,
 } from "@/lib/playData";
+import type { ChartDataPoint } from "@/lib/playData";
+import { useLocalStorage } from "@/lib/useLocalStorage";
+import config from "@/data/config.json";
 import {
   AreaChart,
   Area,
@@ -13,6 +17,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  ReferenceLine,
 } from "recharts";
 
 const clicksChartData = [
@@ -61,7 +66,7 @@ const updatesChartData = [
   { date: "May 02", value: 95 },
 ];
 
-const contentUpdatesHistory = [
+const staticHistory = [
   { date: "Mar 18, 2026", folder: "product", page: "/credit-builder-card", source: "Q1 Goals Grid", sourceType: "grid" as const },
   { date: "Mar 17, 2026", folder: "features", page: "/competition-workflow", source: "Competition Workflow", sourceType: "workflow" as const },
   { date: "Mar 16, 2026", folder: "product", page: "/competition-workflow", source: "Competition Workflow", sourceType: "workflow" as const },
@@ -70,9 +75,53 @@ const contentUpdatesHistory = [
   { date: "Mar 13, 2026", folder: "learn", page: "/competition-workflow", source: "Competition Workflow", sourceType: "workflow" as const },
 ];
 
-export default function MeasureTab() {
+function MarkerDot(props: { cx?: number; cy?: number; payload?: ChartDataPoint }) {
+  const { cx, cy, payload } = props;
+  if (!payload?.marker || cx == null || cy == null) return null;
   return (
-    <div className="flex flex-col gap-6 px-6 py-5">
+    <circle cx={cx} cy={cy} r={4} fill="#1d1b18" stroke="#fff" strokeWidth={2} />
+  );
+}
+
+function getMarkerDates(data: ChartDataPoint[]): string[] {
+  return data.filter((d) => d.marker).map((d) => d.date);
+}
+
+function PublishedBadge({ count }: { count: number }) {
+  return (
+    <span className="text-xs text-[#676c79] bg-[#f3f4f6] px-2 py-0.5 rounded flex items-center gap-1">
+      <span className="w-1.5 h-1.5 rounded-full bg-[#1d1b18]" />
+      {count} Published Content
+    </span>
+  );
+}
+
+export default function MeasureTab() {
+  const [publishedRows] = useLocalStorage<Record<string, boolean>>("quill-action-published-rows", {});
+  const publishedCount = Object.values(publishedRows).filter(Boolean).length;
+
+  const dynamicHistory = Object.entries(publishedRows)
+    .filter(([, published]) => published)
+    .map(([id]) => {
+      const row = actionData.find((r) => r.id === id);
+      if (!row) return null;
+      return {
+        date: row.opportunityDate,
+        folder: "experiences",
+        page: row.page.replace("https://acmeco.com", ""),
+        source: "Food & Dining Refresh",
+        sourceType: "workflow" as const,
+      };
+    })
+    .filter(Boolean) as typeof staticHistory;
+
+  const contentUpdatesHistory = [...dynamicHistory, ...staticHistory];
+
+  const citationMarkers = getMarkerDates(citationRateChartData);
+  const shareMarkers = getMarkerDates(citationShareChartData);
+
+  return (
+    <div className="flex flex-col gap-6 px-8 py-5">
       {/* Filters */}
       <div className="flex items-center gap-3">
         <button className="flex items-center justify-center gap-1.5 rounded-md bg-white hover:bg-[#fafafa] text-[13px] text-[#1d1b18]" style={{ padding: "6px 12px", border: "1px solid rgba(9, 9, 11, 0.08)" }}>
@@ -81,12 +130,12 @@ export default function MeasureTab() {
             <path d="M1.5 5.5h11" stroke="#6D6A64" strokeWidth="1" />
             <path d="M4.5 1v2M9.5 1v2" stroke="#6D6A64" strokeWidth="1" strokeLinecap="round" />
           </svg>
-          Sep 17 - Sep 23
+          {config.measure.dateRange}
           <img src="/icons/toolbar-caret-down.svg" alt="" className="w-[10px] h-[10px] shrink-0" />
         </button>
         <button className="flex items-center justify-center gap-1.5 rounded-md bg-white hover:bg-[#fafafa] text-[13px] text-[#1d1b18]" style={{ padding: "6px 12px", border: "1px solid rgba(9, 9, 11, 0.08)" }}>
           <span className="font-medium">Region</span>
-          United States
+          {config.measure.region}
           <img src="/icons/toolbar-caret-down.svg" alt="" className="w-[10px] h-[10px] shrink-0" />
         </button>
         <button className="flex items-center justify-center gap-1.5 rounded-md bg-white hover:bg-[#fafafa] text-[13px] text-[#1d1b18]" style={{ padding: "6px 12px", border: "1px solid rgba(9, 9, 11, 0.08)" }}>
@@ -107,7 +156,7 @@ export default function MeasureTab() {
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-[28px] font-semibold text-[#1d1b18]">
-                {metric.value}
+                {metric.label === "Pages Refreshed" ? `${publishedCount + 76}` : metric.value}
               </span>
               <span className="text-xs text-[#22c55e] flex items-center gap-0.5">
                 <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
@@ -125,10 +174,7 @@ export default function MeasureTab() {
         <div className="border border-[#ecedef] rounded-lg p-4">
           <div className="flex items-center justify-between mb-1">
             <h3 className="text-sm font-medium text-[#1d1b18]">Citation Rate</h3>
-            <span className="text-xs text-[#676c79] bg-[#f3f4f6] px-2 py-0.5 rounded flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#1d1b18]" />
-              3 Published Content
-            </span>
+            <PublishedBadge count={publishedCount} />
           </div>
           <p className="text-xs text-[#676c79] mb-4">
             How often these pages are cited in AI responses
@@ -143,10 +189,13 @@ export default function MeasureTab() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" vertical={false} />
+                {citationMarkers.map((d) => (
+                  <ReferenceLine key={d} x={d} stroke="#d1d5db" strokeDasharray="3 3" />
+                ))}
                 <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v}%`} domain={[0, 20]} />
                 <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #ecedef", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }} />
-                <Area type="linear" dataKey="value" stroke="#0f8a8a" strokeWidth={1.5} fill="url(#gradCitation)" dot={false} />
+                <Area type="linear" dataKey="value" stroke="#0f8a8a" strokeWidth={1.5} fill="url(#gradCitation)" dot={<MarkerDot />} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -155,10 +204,7 @@ export default function MeasureTab() {
         <div className="border border-[#ecedef] rounded-lg p-4">
           <div className="flex items-center justify-between mb-1">
             <h3 className="text-sm font-medium text-[#1d1b18]">Citation Share</h3>
-            <span className="text-xs text-[#676c79] bg-[#f3f4f6] px-2 py-0.5 rounded flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#1d1b18]" />
-              3 Published Content
-            </span>
+            <PublishedBadge count={publishedCount} />
           </div>
           <p className="text-xs text-[#676c79] mb-4">
             These page&apos;s portion of total citations
@@ -173,10 +219,13 @@ export default function MeasureTab() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" vertical={false} />
+                {shareMarkers.map((d) => (
+                  <ReferenceLine key={d} x={d} stroke="#d1d5db" strokeDasharray="3 3" />
+                ))}
                 <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v}%`} domain={[10, 25]} />
                 <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #ecedef", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }} />
-                <Area type="linear" dataKey="value" stroke="#0f8a8a" strokeWidth={1.5} fill="url(#gradShare)" dot={false} />
+                <Area type="linear" dataKey="value" stroke="#0f8a8a" strokeWidth={1.5} fill="url(#gradShare)" dot={<MarkerDot />} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -191,10 +240,7 @@ export default function MeasureTab() {
             <h3 className="text-sm font-medium text-[#1d1b18]">Clicks</h3>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-[#676c79] bg-[#f3f4f6] px-2 py-0.5 rounded flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#1d1b18]" />
-              3 Published Content
-            </span>
+            <PublishedBadge count={publishedCount} />
             <span className="text-xs text-[#676c79] border border-[#ecedef] px-2 py-0.5 rounded flex items-center gap-1">
               Clicks <span>▾</span>
             </span>
@@ -240,10 +286,7 @@ export default function MeasureTab() {
             <h3 className="text-sm font-medium text-[#1d1b18]">Traffic</h3>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-[#676c79] bg-[#f3f4f6] px-2 py-0.5 rounded flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#1d1b18]" />
-              Published Content
-            </span>
+            <PublishedBadge count={publishedCount} />
             <span className="text-xs text-[#676c79] border border-[#ecedef] px-2 py-0.5 rounded flex items-center gap-1">
               Traffic <span>▾</span>
             </span>
