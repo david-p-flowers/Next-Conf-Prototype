@@ -323,7 +323,7 @@ export const conversationScript: ConversationStep[] = [
   {
     type: "system_text",
     text: "Everything is wired up. Here's your play:",
-    delayMs: 1000,
+    delayMs: 3000,
     streamWordsPerSecond: 60,
   },
 

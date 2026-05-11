@@ -144,31 +144,34 @@ export default function OpportunitiesTab({ onTakeAction }: Props) {
 
       {/* Selection bar */}
       {selected.size > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-white border border-[#ecedef] rounded-lg shadow-lg px-5 py-3 z-40">
-          <span className="text-sm text-[#1d1b18] font-medium">
-            {selected.size} items selected
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-[5px] bg-white border border-[#ecedef] rounded-lg shadow-lg px-4 py-2.5 z-40">
+          <span className="text-[13px] text-[#1d1b18] font-medium mr-2">
+            {selected.size} selected
           </span>
           <button
-            onClick={() => setSelected(new Set())}
-            className="flex items-center gap-1 text-sm text-[#676c79] hover:text-[#1d1b18]"
+            onClick={() => {
+              setRows((prev) => prev.filter((r) => !selected.has(r.id)));
+              setSelected(new Set());
+            }}
+            className="flex items-center justify-center w-[34px] h-[34px] rounded-[6px] bg-[rgba(9,9,11,0.04)] hover:bg-[rgba(9,9,11,0.08)] transition-colors"
           >
-            ✕ Decline
+            <svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M2.5 2.5l7 7M9.5 2.5l-7 7" />
+            </svg>
           </button>
           <button
             onClick={() => {
               const selectedRows = rows.filter((r) => selected.has(r.id));
               onTakeAction(selectedRows);
+              setRows((prev) => prev.filter((r) => !selected.has(r.id)));
               setSelected(new Set());
             }}
-            className="flex items-center gap-1.5 px-4 py-2 bg-[#7c3aed] text-white text-sm font-medium rounded-md hover:bg-[#6d28d9] transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] bg-[#2f2f37] hover:bg-[#3f3f47] text-white text-[13px] font-semibold transition-colors"
           >
-            ✦ Take action
-          </button>
-          <button
-            onClick={() => setSelected(new Set())}
-            className="text-[#676c79] hover:text-[#1d1b18] text-lg leading-none"
-          >
-            ✕
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2 6l3 3 5-5" />
+            </svg>
+            Accept
           </button>
         </div>
       )}
