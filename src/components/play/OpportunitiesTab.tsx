@@ -63,14 +63,14 @@ export default function OpportunitiesTab({ onTakeAction }: Props) {
           {rows.map((row) => (
             <div
               key={row.id}
-              className={`group relative flex items-start border-b border-[rgba(9,9,11,0.08)] last:border-b-0 transition-colors cursor-pointer px-8 ${
+              className={`group relative flex items-start border-b border-[rgba(9,9,11,0.08)] last:border-b-0 transition-colors cursor-pointer px-8 min-h-[56px] ${
                 selected.has(row.id)
                   ? "bg-[#f0f4ff]"
                   : "hover:bg-[#fafafa]"
               }`}
               onClick={() => toggleSelect(row.id)}
             >
-              <div className="w-[44px] shrink-0 pt-3 pl-0 pr-3">
+              <div className="w-[44px] shrink-0 pt-4 pl-0 pr-3">
                 <input
                   type="checkbox"
                   checked={selected.has(row.id)}
@@ -79,21 +79,21 @@ export default function OpportunitiesTab({ onTakeAction }: Props) {
                   className="w-4 h-4 rounded border-[#c7cad1] cursor-pointer"
                 />
               </div>
-              <div className="w-[183px] shrink-0 py-2.5 px-3">
-                <span className="text-[13px] text-[#09090b] underline leading-5 block truncate" title={row.page}>
+              <div className="w-[200px] shrink-0 py-3 px-3">
+                <span className="text-[13px] text-[#09090b] underline leading-5 block" title={row.page}>
                   {row.page}
                 </span>
               </div>
-              <div className="w-[119px] shrink-0 py-2.5 px-3">
+              <div className="w-[130px] shrink-0 py-3 px-3">
                 <div className="flex items-center gap-1.5">
                   <Image src="/icons/folder-open.svg" alt="" width={14} height={14} className="shrink-0" />
-                  <span className="text-[13px] text-[#09090b] leading-5 truncate">{row.folder}</span>
+                  <span className="text-[13px] text-[#09090b] leading-5">{row.folder}</span>
                 </div>
               </div>
-              <div className="flex-1 min-w-[200px] py-2.5 px-3">
-                <span className="text-[13px] text-[#09090b] leading-5">{row.reasoning}</span>
+              <div className="flex-1 min-w-[200px] py-3 px-3">
+                <span className="text-[13px] text-[#09090b] leading-5 line-clamp-2">{row.reasoning}</span>
               </div>
-              <div className="w-[111px] shrink-0 py-2.5 px-3">
+              <div className="w-[111px] shrink-0 py-3 px-3">
                 <span className="text-[13px] text-[#09090b] leading-5 whitespace-nowrap">{row.dateCreated}</span>
               </div>
 
@@ -144,35 +144,37 @@ export default function OpportunitiesTab({ onTakeAction }: Props) {
 
       {/* Selection bar */}
       {selected.size > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-white border border-[#ecedef] rounded-lg shadow-lg px-6 py-3 z-40 min-w-[320px] justify-between">
-          <span className="text-[13px] text-[#1d1b18] font-medium mr-2">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center bg-white border border-[#ecedef] rounded-lg shadow-lg px-6 py-3 z-40 min-w-[320px] justify-between">
+          <span className="text-[13px] text-[#1d1b18] font-medium">
             {selected.size} selected
           </span>
-          <button
-            onClick={() => {
-              setRows((prev) => prev.filter((r) => !selected.has(r.id)));
-              setSelected(new Set());
-            }}
-            className="flex items-center justify-center w-[34px] h-[34px] rounded-[6px] bg-[rgba(9,9,11,0.04)] hover:bg-[rgba(9,9,11,0.08)] transition-colors"
-          >
-            <svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-              <path d="M2.5 2.5l7 7M9.5 2.5l-7 7" />
-            </svg>
-          </button>
-          <button
-            onClick={() => {
-              const selectedRows = rows.filter((r) => selected.has(r.id));
-              onTakeAction(selectedRows);
-              setRows((prev) => prev.filter((r) => !selected.has(r.id)));
-              setSelected(new Set());
-            }}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] bg-[#2f2f37] hover:bg-[#3f3f47] text-white text-[13px] font-semibold transition-colors"
-          >
-            <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M2 6l3 3 5-5" />
-            </svg>
-            Accept
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                setRows((prev) => prev.filter((r) => !selected.has(r.id)));
+                setSelected(new Set());
+              }}
+              className="flex items-center justify-center w-[34px] h-[34px] rounded-[6px] bg-[rgba(9,9,11,0.04)] hover:bg-[rgba(9,9,11,0.08)] transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M2.5 2.5l7 7M9.5 2.5l-7 7" />
+              </svg>
+            </button>
+            <button
+              onClick={() => {
+                const selectedRows = rows.filter((r) => selected.has(r.id));
+                onTakeAction(selectedRows);
+                setRows((prev) => prev.filter((r) => !selected.has(r.id)));
+                setSelected(new Set());
+              }}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] bg-[#2f2f37] hover:bg-[#3f3f47] text-white text-[13px] font-semibold transition-colors"
+            >
+              <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 6l3 3 5-5" />
+              </svg>
+              Accept
+            </button>
+          </div>
         </div>
       )}
     </div>
