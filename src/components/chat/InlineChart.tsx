@@ -108,7 +108,7 @@ export default function InlineChart({
                 border: "1px solid #ecedef",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
               }}
-              formatter={(val: number) => [`${val}%`, title]}
+              formatter={(val) => [`${val}%`, title]}
             />
             <Area
               type="linear"

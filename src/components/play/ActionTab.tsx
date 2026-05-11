@@ -57,13 +57,11 @@ export default function ActionTab({ onViewOutput, additionalRows = [] }: Props) 
   const [selectedCell, setSelectedCell] = useState<string | null>(null);
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [rowStatuses, setRowStatuses] = useLocalStorage<Record<string, StatusType>>("quill-action-row-statuses", {});
-  const [publishedRows, setPublishedRows] = useLocalStorage<Record<string, boolean>>("quill-action-published-rows", () => {
-    const initial: Record<string, boolean> = {};
-    [...actionData, ...additionalRows].forEach((row) => {
-      if (row.published) initial[row.id] = true;
-    });
-    return initial;
+  const defaultPublished: Record<string, boolean> = {};
+  [...actionData, ...additionalRows].forEach((row) => {
+    if (row.published) defaultPublished[row.id] = true;
   });
+  const [publishedRows, setPublishedRows] = useLocalStorage<Record<string, boolean>>("quill-action-published-rows", defaultPublished);
   const [colWidths, setColWidths] = useState(defaultColWidths);
 
   useEffect(() => {
