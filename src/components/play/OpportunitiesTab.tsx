@@ -144,7 +144,7 @@ export default function OpportunitiesTab({ onTakeAction }: Props) {
 
       {/* Selection bar */}
       {selected.size > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-[5px] bg-white border border-[#ecedef] rounded-lg shadow-lg px-4 py-2.5 z-40">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-white border border-[#ecedef] rounded-lg shadow-lg px-6 py-3 z-40 min-w-[320px] justify-between">
           <span className="text-[13px] text-[#1d1b18] font-medium mr-2">
             {selected.size} selected
           </span>
