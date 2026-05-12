@@ -265,7 +265,7 @@ export default function ActionTab({ onViewOutput, additionalRows = [] }: Props) 
                 </td>
                 <td className="h-[36px] px-3 border-b border-[rgba(9,9,11,0.08)] whitespace-nowrap">
                   {publishedRows[row.id] ? (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#ecfdf5] text-[12px] font-medium text-[#059669]">
+                    <span className="inline-flex items-center gap-1 text-[12px] text-[#059669]">
                       <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="shrink-0">
                         <path d="M2 5.5L4 7.5L8 3" stroke="#059669" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
@@ -277,7 +277,7 @@ export default function ActionTab({ onViewOutput, additionalRows = [] }: Props) 
                         e.stopPropagation();
                         setPublishedRows((prev) => ({ ...prev, [row.id]: true }));
                       }}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md border border-[rgba(9,9,11,0.08)] text-[12px] font-medium text-[#09090b] bg-white hover:bg-[#fafafa] transition-colors"
+                      className="text-[12px] text-[#09090b] hover:text-[#059669] transition-colors"
                     >
                       Publish
                     </button>

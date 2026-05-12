@@ -265,12 +265,12 @@ export const citationRateChartData: ChartDataPoint[] = [
   { date: "Mar 30", value: 8.7 },
   { date: "Apr 03", value: 8.5 },
   { date: "Apr 07", value: 8.2, marker: 1 },
-  { date: "Apr 10", value: 8.4 },
-  { date: "Apr 14", value: 8.9 },
-  { date: "Apr 17", value: 9.3 },
-  { date: "Apr 21", value: 9.5, marker: 2 },
-  { date: "Apr 24", value: 9.8 },
-  { date: "Apr 28", value: 10.1, marker: 3 },
+  { date: "Apr 10", value: 9.1 },
+  { date: "Apr 14", value: 10.4 },
+  { date: "Apr 17", value: 11.2 },
+  { date: "Apr 21", value: 11.0, marker: 2 },
+  { date: "Apr 24", value: 12.8 },
+  { date: "Apr 28", value: 14.5, marker: 3 },
 ];
 
 export const citationShareChartData: ChartDataPoint[] = [
@@ -280,12 +280,12 @@ export const citationShareChartData: ChartDataPoint[] = [
   { date: "Mar 30", value: 16.5 },
   { date: "Apr 03", value: 17.0 },
   { date: "Apr 07", value: 17.8, marker: 1 },
-  { date: "Apr 10", value: 18.2 },
-  { date: "Apr 14", value: 18.9 },
-  { date: "Apr 17", value: 19.4 },
-  { date: "Apr 21", value: 20.1, marker: 2 },
-  { date: "Apr 24", value: 20.8 },
-  { date: "Apr 28", value: 21.5, marker: 3 },
+  { date: "Apr 10", value: 19.5 },
+  { date: "Apr 14", value: 21.2 },
+  { date: "Apr 17", value: 22.8 },
+  { date: "Apr 21", value: 22.5, marker: 2 },
+  { date: "Apr 24", value: 25.1 },
+  { date: "Apr 28", value: 28.3, marker: 3 },
 ];
 
 // =============================================

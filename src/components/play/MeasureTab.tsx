@@ -20,50 +20,50 @@ import {
   ReferenceLine,
 } from "recharts";
 
-const clicksChartData = [
+const clicksChartData: ChartDataPoint[] = [
   { date: "Aug 01", value: 35 },
   { date: "Aug 05", value: 38 },
-  { date: "Aug 10", value: 42 },
-  { date: "Aug 15", value: 48 },
-  { date: "Aug 20", value: 52 },
-  { date: "Aug 25", value: 58 },
+  { date: "Aug 10", value: 36 },
+  { date: "Aug 15", value: 34 },
+  { date: "Aug 20", value: 33, marker: 1 },
+  { date: "Aug 25", value: 42 },
   { date: "Sep 01", value: 55 },
-  { date: "Sep 05", value: 60 },
-  { date: "Sep 10", value: 62 },
-  { date: "Sep 15", value: 68 },
-  { date: "Sep 20", value: 72 },
-  { date: "Sep 25", value: 70 },
+  { date: "Sep 05", value: 58, marker: 2 },
+  { date: "Sep 10", value: 72 },
+  { date: "Sep 15", value: 85 },
+  { date: "Sep 20", value: 82, marker: 3 },
+  { date: "Sep 25", value: 95 },
 ];
 
-const trafficChartData = [
+const trafficChartData: ChartDataPoint[] = [
   { date: "Aug 01", value: 28 },
   { date: "Aug 05", value: 30 },
-  { date: "Aug 10", value: 32 },
-  { date: "Aug 15", value: 35 },
-  { date: "Aug 20", value: 38 },
-  { date: "Aug 25", value: 42 },
+  { date: "Aug 10", value: 27 },
+  { date: "Aug 15", value: 25 },
+  { date: "Aug 20", value: 24, marker: 1 },
+  { date: "Aug 25", value: 32 },
   { date: "Sep 01", value: 40 },
-  { date: "Sep 05", value: 45 },
-  { date: "Sep 10", value: 48 },
-  { date: "Sep 15", value: 52 },
-  { date: "Sep 20", value: 55 },
-  { date: "Sep 25", value: 53 },
+  { date: "Sep 05", value: 42, marker: 2 },
+  { date: "Sep 10", value: 55 },
+  { date: "Sep 15", value: 65 },
+  { date: "Sep 20", value: 63, marker: 3 },
+  { date: "Sep 25", value: 74 },
 ];
 
-const updatesChartData = [
-  { date: "Apr 01", value: 20 },
-  { date: "Apr 05", value: 35 },
-  { date: "Apr 08", value: 42 },
-  { date: "Apr 10", value: 55 },
-  { date: "Apr 12", value: 60 },
-  { date: "Apr 15", value: 65 },
-  { date: "Apr 18", value: 70 },
-  { date: "Apr 20", value: 78 },
-  { date: "Apr 22", value: 85 },
-  { date: "Apr 25", value: 95 },
-  { date: "Apr 27", value: 110 },
-  { date: "Apr 30", value: 120 },
-  { date: "May 02", value: 95 },
+const updatesChartData: ChartDataPoint[] = [
+  { date: "Apr 01", value: 10 },
+  { date: "Apr 05", value: 15 },
+  { date: "Apr 08", value: 22, marker: 1 },
+  { date: "Apr 10", value: 45 },
+  { date: "Apr 12", value: 52 },
+  { date: "Apr 15", value: 58, marker: 2 },
+  { date: "Apr 18", value: 78 },
+  { date: "Apr 20", value: 85 },
+  { date: "Apr 22", value: 95, marker: 3 },
+  { date: "Apr 25", value: 115 },
+  { date: "Apr 27", value: 130 },
+  { date: "Apr 30", value: 145 },
+  { date: "May 02", value: 140 },
 ];
 
 const staticHistory = [
@@ -119,6 +119,9 @@ export default function MeasureTab() {
 
   const citationMarkers = getMarkerDates(citationRateChartData);
   const shareMarkers = getMarkerDates(citationShareChartData);
+  const clicksMarkers = getMarkerDates(clicksChartData);
+  const trafficMarkers = getMarkerDates(trafficChartData);
+  const updatesMarkers = getMarkerDates(updatesChartData);
 
   return (
     <div className="flex flex-col gap-6 px-8 py-5">
@@ -193,7 +196,7 @@ export default function MeasureTab() {
                   <ReferenceLine key={d} x={d} stroke="#d1d5db" strokeDasharray="3 3" />
                 ))}
                 <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v}%`} domain={[0, 20]} />
+                <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v}%`} domain={[0, "auto"]} />
                 <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #ecedef", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }} />
                 <Area type="linear" dataKey="value" stroke="#0f8a8a" strokeWidth={1.5} fill="url(#gradCitation)" dot={<MarkerDot />} />
               </AreaChart>
@@ -223,7 +226,7 @@ export default function MeasureTab() {
                   <ReferenceLine key={d} x={d} stroke="#d1d5db" strokeDasharray="3 3" />
                 ))}
                 <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v}%`} domain={[10, 25]} />
+                <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v}%`} domain={[10, "auto"]} />
                 <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #ecedef", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }} />
                 <Area type="linear" dataKey="value" stroke="#0f8a8a" strokeWidth={1.5} fill="url(#gradShare)" dot={<MarkerDot />} />
               </AreaChart>
@@ -263,10 +266,13 @@ export default function MeasureTab() {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" vertical={false} />
+              {clicksMarkers.map((d) => (
+                <ReferenceLine key={d} x={d} stroke="#d1d5db" strokeDasharray="3 3" />
+              ))}
               <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #ecedef", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }} />
-              <Area type="linear" dataKey="value" stroke="#0f8a8a" strokeWidth={1.5} fill="url(#gradClicks)" dot={false} />
+              <Area type="linear" dataKey="value" stroke="#0f8a8a" strokeWidth={1.5} fill="url(#gradClicks)" dot={<MarkerDot />} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -309,10 +315,13 @@ export default function MeasureTab() {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" vertical={false} />
+              {trafficMarkers.map((d) => (
+                <ReferenceLine key={d} x={d} stroke="#d1d5db" strokeDasharray="3 3" />
+              ))}
               <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #ecedef", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }} />
-              <Area type="linear" dataKey="value" stroke="#0f8a8a" strokeWidth={1.5} fill="url(#gradTraffic)" dot={false} />
+              <Area type="linear" dataKey="value" stroke="#0f8a8a" strokeWidth={1.5} fill="url(#gradTraffic)" dot={<MarkerDot />} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -342,10 +351,13 @@ export default function MeasureTab() {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" vertical={false} />
+              {updatesMarkers.map((d) => (
+                <ReferenceLine key={d} x={d} stroke="#d1d5db" strokeDasharray="3 3" />
+              ))}
               <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #ecedef", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }} />
-              <Area type="linear" dataKey="value" stroke="#0f8a8a" strokeWidth={1.5} fill="url(#gradUpdates)" dot={false} />
+              <Area type="linear" dataKey="value" stroke="#0f8a8a" strokeWidth={1.5} fill="url(#gradUpdates)" dot={<MarkerDot />} />
             </AreaChart>
           </ResponsiveContainer>
         </div>

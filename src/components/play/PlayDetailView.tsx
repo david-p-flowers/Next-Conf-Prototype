@@ -59,9 +59,6 @@ export default function PlayDetailView() {
               Food & Culinary Experience Refresh Play
             </h1>
           </div>
-          <p className="text-[12px] text-[#676c79] leading-[18px] mt-2 truncate">
-            Descriptive text for the play Descriptive text for the playDescriptive text for the playDescriptive text for the play
-          </p>
         </div>
 
         {/* Tabs */}
